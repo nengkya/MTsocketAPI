@@ -1,7 +1,8 @@
 /*
 #define AF_INET 2; Internet Protocol (IP); Address Family InterNET
-#define	SOL_SOCKET 0xffff; = 65535; options for socket level or SOcket Layer
-
+#define	SOL_SOCKET 0xffff; = 65535; options for SOcket Level
+#define	SO_REUSEADDR 0x0004 allow local address reuse
+#define	SO_REUSEPORT 0x0200 allow local address & port reuse
 int socket(int domain, int type, int protocol);
 */
 #include <sys/socket.h>
@@ -10,7 +11,7 @@ int socket(int domain, int type, int protocol);
 
 int main(){
 
-    int server_file_descriptor;
+    int server_file_descriptor, option_value = 1;
     
     /*
     1. Create socket
@@ -68,9 +69,20 @@ int main(){
 
     int setsockopt(int sockfd, int level, int optname,  const void * option_value, socklen_t optlen);
 
+    There are two types of socket options:
+    Boolean options that enable or disable a feature or behavior,
+    and options that require an integer value or structure.
+    To enable a Boolean option, the option value parameter points to a nonzero integer.
+    To disable the option option value points to an integer equal to zero.
+    The optlen parameter should be equal to sizeof(int) for Boolean options.
+    For other options, optval points to an integer or structure
+    that contains the desired value for the option, and optlen is the length of the integer or structure.
+
+    Header shall define the socklen_t type, which is an integer type of width of at least 32 bits;
+
     Forcefully attaching 1. Socket to the port 8000.
     */
-    if (setsockopt(server_file_descriptor, SOL_SOCKET, )){
+    if (setsockopt(server_file_descriptor, SOL_SOCKET, SO_REUSEADDR, &option_value, sizeof(option_value))){
 
 
     }
