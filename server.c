@@ -6,12 +6,14 @@
 int socket(int domain, int type, int protocol);
 */
 #include <sys/socket.h>
-#include <stdio.h>  /* perror(); */
-#include <stdlib.h> /* EXIT_FAILURE */
+#include <stdio.h>	/* perror(); 	      */
+#include <stdlib.h>	/* EXIT_FAILURE	      */
+#include <netinet/in.h>	/* struct sockaddr_in */
 
 int main(){
 
     int server_file_descriptor, option_value = 1;
+    struct sockaddr_in address;
     
     /*
     1. Create socket
@@ -78,11 +80,42 @@ int main(){
     For other options, optval points to an integer or structure
     that contains the desired value for the option, and optlen is the length of the integer or structure.
 
+    in C, "any pointer" is written as void *
+
     Header shall define the socklen_t type, which is an integer type of width of at least 32 bits;
 
     Forcefully attaching 1. Socket to the port 8000.
     */
-    if (setsockopt(server_file_descriptor, SOL_SOCKET, SO_REUSEADDR, &option_value, sizeof(option_value))){
+    if (setsockopt(server_file_descriptor, SOL_SOCKET, SO_REUSEADDR, &option_value, sizeof(option_value))) {
+	perror("setsockopt failed.");
+	exit(EXIT_FAILURE);
+    }
+
+    /*
+    3. Bind socket to the address and port
+
+    extern int bind(  int __fd, __CONST_SOCKADDR_ARG __addr, socklen_t __len)
+	   int bind(int sockfd, const struct sockaddr * addr, socklen_t addrlen);
+
+    struct sockaddr_in {
+    short            sin_family;   // e.g. AF_INET
+    unsigned short   sin_port;     // e.g. htons(3490)
+    struct in_addr   sin_addr;     // see struct in_addr, below
+    char             sin_zero[8];  // zero this if you want to
+    };
+
+    struct in_addr {
+    unsigned long s_addr;  // load with inet_aton()
+    };
+
+    struct sockaddr {
+    unsigned short sa_family;   // address family, AF_xxx
+    char           sa_data[14]; // 14 bytes of protocol address
+    };
+    */
+
+    if (bind(server_file_descriptor, (struct sockaddr *)&address, sizeof(address)) < 0) {
+
 
 
     }
