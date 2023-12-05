@@ -14,6 +14,18 @@ int game(char you, char computer) {
     if (you == 'p' && computer == 's')
 	return 1;
 
+    if (you == 's' && computer == 'z')
+	return 1;
+
+    if (you == 'z' && computer == 's')
+	return 0;
+
+    if (you == 'p' && computer == 'z')
+	return 0;
+
+    if (you == 'z' && computer == 'p')
+	return 1;
+
 }
 
 
@@ -51,12 +63,7 @@ int main() {
     if (result == 1)
 	printf("You win !!!\n");
 
+    if (result == 0)
+	printf("You lost !!!\n");
+
 }
-
-
-
-
-
-
-
-
